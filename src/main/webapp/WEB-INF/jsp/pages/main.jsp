@@ -1,0 +1,68 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2019/12/12
+  Time: 9:05
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+    <script src="${pageContext.request.contextPath}/static/js/jquery-1.12.4.js"></script>
+</head>
+<body>
+<center>
+    <h1>帖子列表</h1>
+    <form action="${pageContext.request.contextPath}/invitation/list" method="post" id="myform">
+        <input type="hidden" name="pageNum" id="pageNum">
+        帖子标题:<input type="text" name="titleName" value="${condition.titleName}">
+        <input type="submit" value="搜索">
+    </form>
+    <table border="1" cellspacing="0" cellpadding="5" width="80%">
+        <tr>
+            <th>标题</th>
+            <th>内容摘要</th>
+            <th>作者</th>
+            <th>发布时间</th>
+            <th>操作</th>
+        </tr>
+        <%--动态--%>
+        <c:forEach items="${pageInfo.list}" var="invitation">
+            <tr>
+                <td>${invitation.title}</td>
+                <td>${invitation.summary}</td>
+                <td>${invitation.author}</td>
+                <td><fmt:formatDate value="${invitation.createdate}" pattern="yyyy-MM-dd"></fmt:formatDate> </td>
+                <td>
+                    <a href="javascript:toReply(${invitation.id})">查看回复</a>&nbsp;&nbsp;
+                    <a href="javascript:toDel(${invitation.id})">删除</a>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+    <table>
+        <tr>
+            <td>第${pageInfo.pageNum}/${pageInfo.pages}页</td>
+            <td><a href="javascript:toPage(1)">首页</a></td>
+            <td><a href="javascript:toPage(${pageInfo.pageNum-1})">上一页</a></td>
+            <td><a href="javascript:toPage(${pageInfo.pageNum+1})">下一页</a></td>
+            <td><a href="javascript:toPage(${pageInfo.pages})">末页</a></td>
+        </tr>
+    </table>
+</center>
+</body>
+<script>
+    function toPage(pageNum) {
+        //给隐藏域赋值
+        $("#pageNum").val(pageNum)
+        //提交表单
+        $("#myform").submit();
+    }
+    function toReply(id) {
+        location.href = "${pageContext.request.contextPath}/replyDetail/toReply?invid="+id;
+    }
+</script>
+</html>
